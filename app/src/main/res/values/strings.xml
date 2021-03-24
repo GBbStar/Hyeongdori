@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Graduation</string>
+    <string name="take_picture">사진 찍기</string>
+    <string name="select_img">이미지 선택</string>
+    <string name="upload_img">업로드</string>
+
+</resources>
