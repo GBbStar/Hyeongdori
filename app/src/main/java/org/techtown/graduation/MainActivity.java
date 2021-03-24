@@ -14,6 +14,7 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,11 +32,16 @@ import com.bumptech.glide.Glide;
 import com.pedro.library.AutoPermissions;
 import com.pedro.library.AutoPermissionsListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,9 +61,10 @@ public class MainActivity extends AppCompatActivity implements AutoPermissionsLi
     Button takePicture;
     Button selectImg;
     Button upload_img;
+    TextView content;
 
     static RequestQueue requestQueue;
-    static String myUrl = "http://192.168.140.23:8080/api";
+    static String myUrl = "http://172.16.3.18:8080/api";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements AutoPermissionsLi
         setContentView(R.layout.activity_main);
 
         imageView = findViewById(R.id.img_selected);
+        content = findViewById(R.id.content);
 
         initTakeButton();
         initSelectButton();
@@ -164,6 +172,7 @@ public class MainActivity extends AppCompatActivity implements AutoPermissionsLi
 
         //sending image to server
         StringRequest request = new StringRequest(Request.Method.GET, myUrl, new Response.Listener<String>(){
+
             @Override
             public void onResponse(String s) {
                 progressDialog.dismiss();
@@ -175,7 +184,22 @@ public class MainActivity extends AppCompatActivity implements AutoPermissionsLi
 //                else{
 //                    Toast.makeText(MainActivity.this, "Some error occurred!", Toast.LENGTH_LONG).show();
 //                }
-                Glide.with(getApplicationContext()).load(s).into(imageView);
+
+
+                // 이미지 가져와서 바꿔주기
+//                Glide.with(getApplicationContext()).load(s).into(imageView);
+
+                try {
+                    JSONObject jsonObject = new JSONObject(s);
+                    analysisJson(jsonObject);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+
+                    Toast.makeText(MainActivity.this, "response error", Toast.LENGTH_SHORT).show();
+                }
+
+
             }
         },new Response.ErrorListener(){
             @Override
@@ -198,7 +222,14 @@ public class MainActivity extends AppCompatActivity implements AutoPermissionsLi
 //        waitResponse();
     }
 
+    private void analysisJson(JSONObject json) throws JSONException {
+        String imgUrl = json.getString("url");
+        JSONArray defectType = json.getJSONArray("defect_type");
 
+        content.append(imgUrl+"\n");
+
+        content.append(defectType.toString());
+    }
 
 //    public void waitResponse(){
 //        String url = myUrl;

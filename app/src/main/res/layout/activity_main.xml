@@ -28,10 +28,17 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/upload_img" />
-
+    <TextView
+        android:id="@+id/content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff"
+        />
     <ImageView
         android:id="@+id/img_selected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
+
+
 </LinearLayout>
